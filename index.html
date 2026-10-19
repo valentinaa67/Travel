@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Куда поехать — бот для подбора путешествий</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--ink:#000;--mut:#4f5651;--mint:#b9f3c6;--mint2:#7fdda0;--line:#e3e9e5;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:104px}
+h1,h2,h3{font-family:Unbounded,Onest,system-ui,sans-serif;font-weight:700;line-height:1.15;margin:0}
+h2{font-size:24px;margin-bottom:14px}
+h3{font-size:16px;font-weight:500}
+p{margin:0 0 10px}
+.wrap{max-width:720px;margin:0 auto;padding:0 18px}
+section{padding:28px 0}
+.logo{display:flex;align-items:center;gap:10px;padding:16px 0 4px;font:700 18px Unbounded,sans-serif}
+.logo i{width:22px;height:22px;border-radius:50%;background:var(--mint2);display:inline-block;box-shadow:inset -5px -4px 0 var(--mint)}
+.lead{color:var(--mut);margin:0 0 14px}
+.hero{position:relative;overflow:hidden;isolation:isolate;border-radius:26px;min-height:440px;background:linear-gradient(180deg,var(--mint) 0%,#eefcf1 62%,#fff 100%);border:1px solid var(--line)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.hero-in{padding:28px 20px 0}
+.hero h1{font-size:clamp(30px,9vw,46px)}
+.hero p{max-width:30ch;margin-top:12px;font-size:18px}
+.glass{background:rgba(255,255,255,.58);-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);border:1px solid rgba(255,255,255,.85);box-shadow:0 8px 28px rgba(0,0,0,.12)}
+.cta{position:absolute;left:14px;right:14px;bottom:14px;display:block;text-align:center;padding:17px 12px;border-radius:18px;color:var(--ink);text-decoration:none;font:600 18px Onest,sans-serif}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.steps li{display:flex;gap:14px;align-items:flex-start;padding:16px;border:1px solid var(--line);border-radius:18px}
+.steps b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--mint);display:grid;place-items:center;font:700 15px Unbounded,sans-serif}
+.steps p{margin:2px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{padding:8px 14px;border-radius:999px;background:var(--mint);font-weight:500}
+.sample{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(135deg,#fff,#f3fdf5)}
+.sample h3{font-size:19px;margin-bottom:8px}
+.sample dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+.sample dt{color:var(--mut)}.sample dd{margin:0}
+.btn{appearance:none;border:0;cursor:pointer;font:600 17px Onest,sans-serif;color:var(--ink);background:var(--mint2);padding:14px 20px;border-radius:16px;text-decoration:none;display:inline-block}
+.btn.ghost{background:#fff;border:1.5px solid var(--ink)}
+.opt{margin:0 8px 8px 0;background:var(--mint)}
+.q{border:1px solid var(--line);border-radius:22px;padding:20px}
+.q h3{font-size:19px;margin-bottom:14px}
+.q input{width:100%;font:17px Onest,sans-serif;padding:14px;border:1.5px solid var(--ink);border-radius:14px;margin-bottom:12px;background:#fff;color:var(--ink)}
+.bar-p{height:6px;background:var(--line);border-radius:6px;margin-bottom:16px;overflow:hidden}
+.bar-p i{display:block;height:100%;background:var(--mint2);width:0;transition:width .3s}
+pre{white-space:pre-wrap;font:16px/1.6 Onest,sans-serif;background:#f3fdf5;border-radius:16px;padding:16px;margin:0 0 14px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.note{color:var(--mut);font-size:15px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));pointer-events:none}
+nav div{pointer-events:auto;max-width:460px;margin:0 auto;display:flex;border-radius:22px;padding:6px}
+nav a{flex:1;text-align:center;padding:12px 4px;border-radius:16px;color:var(--ink);text-decoration:none;font-weight:600;font-size:15px}
+nav a.on{background:var(--mint)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+.ac{position:relative}.acl{position:absolute;left:0;right:0;top:calc(100% - 12px);z-index:5;margin:0;padding:6px;list-style:none;background:#fff;border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.12)}.acl[hidden]{display:none}
+.acl button{display:block;width:100%;text-align:left;font:16px Onest,sans-serif;padding:11px 12px;border:0;background:none;border-radius:10px;cursor:pointer;color:var(--ink)}.acl button:hover,.acl button:focus-visible{background:var(--mint)}
+.cal{margin-bottom:6px}.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.ch b{font:600 17px Onest,sans-serif}
+.ch button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;font-size:20px;cursor:pointer;color:var(--ink)}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.cg span{color:var(--mut);font-size:13px;padding:4px 0}
+.cg button{aspect-ratio:1;border:0;background:none;border-radius:12px;font:500 16px Onest,sans-serif;cursor:pointer;color:var(--ink);padding:0}.cg button:disabled{color:#b7beb9;cursor:default}
+.cg button.rg{background:var(--mint);border-radius:0}.cg button.on{background:var(--mint2);box-shadow:inset 0 0 0 2px var(--ink);border-radius:12px}
+.cs{margin:12px 0;font-weight:600;min-height:1.5em}.btn[disabled]{opacity:.4;cursor:default}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.bar-p i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><i></i>Куда поехать</div>
+  <p class="lead">Бот в Telegram подбирает поездку под ваши даты, бюджет и состав семьи.</p>
+
+  <div class="hero" id="home">
+    <svg viewBox="0 0 400 440" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g fill="none" stroke="#000" stroke-width="1.6" stroke-dasharray="2 7" stroke-linecap="round" opacity=".55">
+        <path d="M60 330 Q130 190 230 250"/><path d="M230 250 Q300 150 350 215"/><path d="M60 330 Q200 420 340 330"/>
+      </g>
+      <g fill="#7fdda0" stroke="#000" stroke-width="2"><circle cx="60" cy="330" r="8"/><circle cx="230" cy="250" r="8"/><circle cx="350" cy="215" r="8"/><circle cx="340" cy="330" r="8"/></g>
+      <path d="M268 188l30 8-10 8 18 6-6 6-22-4-8 14-6-3 4-16-18-8z" fill="#000" transform="translate(-26 -12)"/>
+    </svg>
+    <div class="hero-in">
+      <h1>Куда поехать на этот раз?</h1>
+      <p>Ответьте на несколько вопросов и получите три направления с датами, отелем и ссылками.</p>
+    </div>
+    <a class="cta glass" href="#quiz">Подобрать поездку</a>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="how" class="rv">
+    <h2>Как это работает</h2>
+    <ol class="steps">
+      <li><b>1</b><div><h3>Вы отвечаете на вопросы</h3><p>Город вылета, кто едет, даты, погода, бюджет в рублях.</p></div></li>
+      <li><b>2</b><div><h3>Бот учитывает гражданство</h3><p>Не предлагает страны, куда сложно попасть с вашим паспортом.</p></div></li>
+      <li><b>3</b><div><h3>Вы получаете три направления</h3><p>Каждое отдельным сообщением: даты, ночи, отель, ориентировочная цена.</p></div></li>
+      <li><b>4</b><div><h3>Переходите к отелям и билетам</h3><p>Ссылки на Островок и Aviasales внизу каждого варианта.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="rv">
+    <h2>О чём спросит бот</h2>
+    <div class="chips"><span>Город вылета</span><span>Взрослые и дети</span><span>Возраст детей</span><span>Гражданство</span><span>Даты</span><span>Длительность</span><span>Погода</span><span>Бюджет</span><span>Всё включено</span></div>
+  </section>
+
+  <section class="rv">
+    <h2>Так выглядит ответ</h2>
+    <div class="sample">
+      <h3>Хургада, Египет</h3>
+      <dl>
+        <dt>Даты</dt><dd>7 ночей, в выбранные вами даты</dd>
+        <dt>Почему</dt><dd>Тёплое море и пляж у отеля.</dd>
+        <dt>Отель</dt><dd>Название, питание и примерная цена в рублях</dd>
+      </dl>
+      <p class="note" style="margin-top:12px">Пример формата. Реальные варианты зависят от ваших ответов.</p>
+    </div>
+  </section>
+
+  <section id="quiz" class="rv">
+    <h2>Моя анкета</h2>
+    <div class="q" id="box"></div>
+  </section>
+</main>
+
+<nav><div class="glass">
+  <a href="#home" data-n="home" class="on">Главная</a>
+  <a href="#how" data-n="how">Как работает</a>
+  <a href="#quiz" data-n="quiz">Моя анкета</a>
+</div></nav>
+
+<script>
+// Поменяйте ссылку на вашего бота (одно место)
+var BOT_URL = "https://t.me/Russian_Travel_AI_Bot";
+document.querySelectorAll("[data-bot]").forEach(function(a){a.href=BOT_URL;a.target="_blank";a.rel="noopener"});
+
+var steps=[
+ {k:"Город вылета",q:"Из какого города вылетаете?",t:1,ac:1},
+ {k:"Взрослых",q:"Сколько взрослых едет?",o:["1","2","3","4"],t:1},
+ {k:"Детей",q:"Сколько с вами детей?",o:["Нет","1","2","3"]},
+ {k:"Возраст детей",q:"Сколько лет детям?",ages:1,skip:function(a){return a["Детей"]==="Нет"}},
+ {k:"Гражданство",q:"Какое у вас гражданство?",o:["Россия","Беларусь","Казахстан"],t:1},
+ {k:"Даты",q:"Когда вылетаете и возвращаетесь?",cal:1},
+ {k:"Погода",q:"Какая погода нужна?",o:["Тепло","Прохладно","Снег","Не важно"]},
+ {k:"Бюджет, ₽",q:"Какой бюджет в рублях?",t:1},
+ {k:"Всё включено",q:"Нужно «всё включено»?",o:["Да","Не важно"]}
+];
+var box=document.getElementById("box"),ans={},i=0;
+function store(v){try{if(v===null)return localStorage.getItem("anketa");localStorage.setItem("anketa",v)}catch(e){return null}}
+function text(){return Object.keys(ans).map(function(k){return k+": "+ans[k]}).join("\n")}
+function linkify(el,t){t.split(/(https?:\/\/\S+)/).forEach(function(p){
+  if(/^https?:\/\//.test(p)){var a=document.createElement("a");a.href=p;a.target="_blank";a.rel="noopener";a.textContent=p.indexOf("ostrovok")>-1?"Смотреть отели":"Искать билеты";el.appendChild(a)}
+  else el.appendChild(document.createTextNode(p.replace(/(🏨|✈️)\s*(Отель|Билеты):\s*$/,"$1 $2: ")))})}
+function done(){
+  var s=text();store(s);
+  box.innerHTML="<h3>Подбираю варианты…</h3><p class='note'>Это занимает до минуты: сервер может просыпаться.</p>";
+  var body={city:ans["Город вылета"],adults:ans["Взрослых"],children:ans["Детей"],children_ages:ans["Возраст детей"]||"",citizenship:ans["Гражданство"],dates:ans["Даты"],nights:ans["Ночей"],weather:ans["Погода"],budget:ans["Бюджет, ₽"],all_inclusive:ans["Всё включено"]};
+  fetch("/suggest",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+  .then(function(r){return r.json()})
+  .then(function(d){
+    if(d.error)throw new Error(d.error);
+    box.innerHTML="<h3>Ваши варианты</h3><div id='res'></div><div class='actions'><button class='btn' id='rs'>Заполнить заново</button></div>";
+    var res=document.getElementById("res");
+    (d.destinations||[]).forEach(function(x){var c=document.createElement("div");c.className="sample";c.style.marginBottom="12px";
+      var p=document.createElement("pre");p.style.margin="0";linkify(p,x.text);c.appendChild(p);res.appendChild(c)});
+    document.getElementById("rs").onclick=function(){ans={};i=0;draw()};
+  })
+  .catch(function(e){
+    box.innerHTML="<h3>Не получилось подобрать</h3><p class='note'></p><div class='actions'><button class='btn' id='rt'>Попробовать ещё раз</button><button class='btn ghost' id='rs'>Заполнить заново</button></div>";
+    box.querySelector(".note").textContent="Ошибка: "+e.message;
+    document.getElementById("rt").onclick=done;
+    document.getElementById("rs").onclick=function(){ans={};i=0;draw()};
+  });
+}
+function draw(){
+  while(i<steps.length&&steps[i].skip&&steps[i].skip(ans)){i++}
+  if(i>=steps.length){return done()}
+  var s=steps[i],h="<div class='bar-p'><i style='width:"+Math.round(i/steps.length*100)+"%'></i></div><h3></h3><div id='in'></div>";
+  box.innerHTML=h;box.querySelector("h3").textContent=s.q;
+  var c=document.getElementById("in");
+  if(s.o){s.o.forEach(function(o){var b=document.createElement("button");b.className="btn opt";b.textContent=o;b.onclick=function(){ans[s.k]=o;i++;draw()};c.appendChild(b)})}
+  if(s.t){var inp=document.createElement("input");inp.type="text";inp.setAttribute("aria-label",s.q);var b2=document.createElement("button");b2.className="btn";b2.textContent="Дальше";
+    var go=function(){if(!inp.value.trim()){inp.focus();return}ans[s.k]=inp.value.trim();i++;draw()};
+    b2.onclick=go;inp.onkeydown=function(e){if(e.key==="Enter")go()};
+    c.appendChild(inp);c.appendChild(b2);if(s.ac)attachAC(inp)}
+  if(s.cal)calendar(c);
+  if(s.ages)ageButtons(c);
+}
+function ageButtons(c){
+  var cnt=parseInt(ans["Детей"])||1;
+  var picked=[],wrap=document.createElement("div");c.appendChild(wrap);
+  var hint=document.createElement("p");hint.className="note";hint.style.marginBottom="10px";
+  hint.textContent=cnt>1?("Выберите возраст каждого ребёнка ("+cnt+")"):"Выберите возраст ребёнка";
+  wrap.appendChild(hint);
+  var grid=document.createElement("div");grid.className="chips";wrap.appendChild(grid);
+  var nextBtn=document.createElement("button");nextBtn.className="btn";nextBtn.textContent="Дальше";nextBtn.disabled=true;nextBtn.style.marginTop="14px";
+  var btns=[];
+  for(var age=0;age<=18;age++){(function(age){
+    var b=document.createElement("button");b.type="button";b.className="btn opt";b.textContent=age;btns[age]=b;
+    b.onclick=function(){
+      var pos=picked.indexOf(age);
+      if(pos>-1){picked.splice(pos,1);b.style.boxShadow="none"}
+      else{if(picked.length>=cnt){var first=picked.shift();btns[first].style.boxShadow="none"}
+        picked.push(age);b.style.boxShadow="inset 0 0 0 2px var(--ink)"}
+      nextBtn.disabled=picked.length<cnt;
+    };
+    grid.appendChild(b);
+  })(age)}
+  wrap.appendChild(nextBtn);
+  nextBtn.onclick=function(){ans["Возраст детей"]=picked.slice().sort(function(x,y){return x-y}).join(", ");i++;draw()};
+}
+var CITIES=["Москва, Россия","Санкт-Петербург, Россия","Минск, Беларусь","Мурманск, Россия","Махачкала, Россия","Магнитогорск, Россия","Минеральные Воды, Россия","Новосибирск, Россия","Нижний Новгород, Россия","Казань, Россия","Екатеринбург, Россия","Самара, Россия","Уфа, Россия","Краснодар, Россия","Сочи, Россия","Ростов-на-Дону, Россия","Волгоград, Россия","Воронеж, Россия","Пермь, Россия","Красноярск, Россия","Омск, Россия","Челябинск, Россия","Тюмень, Россия","Иркутск, Россия","Хабаровск, Россия","Владивосток, Россия","Калининград, Россия","Астана, Казахстан","Алматы, Казахстан","Ташкент, Узбекистан","Ереван, Армения","Баку, Азербайджан","Тбилиси, Грузия","Бишкек, Кыргызстан"];
+function attachAC(inp){
+  var w=document.createElement("div");w.className="ac";inp.parentNode.insertBefore(w,inp);w.appendChild(inp);
+  var ul=document.createElement("ul");ul.className="acl";ul.hidden=true;w.appendChild(ul);inp.setAttribute("autocomplete","off");
+  function show(){
+    var v=inp.value.trim().toLowerCase();ul.innerHTML="";
+    var m=v?CITIES.filter(function(c){return c.toLowerCase().split(", ").some(function(p){return p.indexOf(v)===0})}).slice(0,6):[];
+    ul.hidden=!m.length;
+    m.forEach(function(c){var li=document.createElement("li"),b=document.createElement("button");b.type="button";b.textContent=c;
+      b.onclick=function(){inp.value=c.split(", ")[0];ul.hidden=true;inp.focus()};li.appendChild(b);ul.appendChild(li)});
+  }
+  inp.addEventListener("input",show);
+  document.addEventListener("click",function(e){if(!w.contains(e.target))ul.hidden=true});
+}
+var MN=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+function nights(n){return n+" "+((n%10==1&&n%100!=11)?"ночь":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?"ночи":"ночей")}
+function ru(d){return d.toLocaleDateString("ru-RU")}
+function calendar(c){
+  var t=new Date();t.setHours(0,0,0,0);
+  var view=new Date(t.getFullYear(),t.getMonth(),1),a=null,b=null;
+  var w=document.createElement("div");w.className="cal";c.appendChild(w);
+  function mk(txt,label,fn){var x=document.createElement("button");x.type="button";x.textContent=txt;x.setAttribute("aria-label",label);x.onclick=fn;return x}
+  function render(){
+    w.innerHTML="";
+    var h=document.createElement("div");h.className="ch";
+    var ttl=document.createElement("b");ttl.textContent=MN[view.getMonth()]+" "+view.getFullYear();
+    h.appendChild(mk("‹","Предыдущий месяц",function(){view=new Date(view.getFullYear(),view.getMonth()-1,1);render()}));
+    h.appendChild(ttl);
+    h.appendChild(mk("›","Следующий месяц",function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render()}));
+    w.appendChild(h);
+    var g=document.createElement("div");g.className="cg";
+    ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(function(n){var s=document.createElement("span");s.textContent=n;g.appendChild(s)});
+    var off=(view.getDay()+6)%7,days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+    for(var k=0;k<off;k++)g.appendChild(document.createElement("i"));
+    for(var n=1;n<=days;n++){(function(n){
+      var d=new Date(view.getFullYear(),view.getMonth(),n),x=document.createElement("button");x.type="button";x.textContent=n;x.disabled=d<t;
+      if((a&&+d===+a)||(b&&+d===+b))x.className="on";else if(a&&b&&d>a&&d<b)x.className="rg";
+      x.onclick=function(){if(!a||b||d<=a){a=d;b=null}else{b=d}render()};g.appendChild(x)})(n)}
+    w.appendChild(g);
+    var s=document.createElement("p");s.className="cs";
+    s.textContent=a&&b?ru(a)+" — "+ru(b)+" · "+nights(Math.round((b-a)/864e5)):a?"Вылет "+ru(a)+". Теперь выберите дату возвращения":"Выберите дату вылета";
+    w.appendChild(s);
+    var nx=document.createElement("button");nx.className="btn";nx.textContent="Дальше";nx.disabled=!(a&&b);
+    nx.onclick=function(){ans["Даты"]=ru(a)+" — "+ru(b);ans["Ночей"]=Math.round((b-a)/864e5);i++;draw()};
+    w.appendChild(nx);
+  }
+  render();
+}
+var saved=store(null);
+if(saved){box.innerHTML="<h3>Прошлая анкета</h3><pre></pre><div class='actions'><button class='btn' id='nw'>Заполнить заново</button><a class='btn ghost' data-bot href='#'>Открыть бота</a></div>";
+  box.querySelector("pre").textContent=saved;var bb=box.querySelector("[data-bot]");bb.href=BOT_URL;bb.target="_blank";bb.rel="noopener";
+  document.getElementById("nw").onclick=function(){ans={};i=0;draw()}}
+else{draw()}
+
+// Появление при прокрутке (если анимации не отключены)
+var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+var rv=document.querySelectorAll(".rv");
+if(rm||!("IntersectionObserver" in window)){rv.forEach(function(e){e.classList.add("in")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12});rv.forEach(function(e){io.observe(e)})}
+
+// Подсветка активной вкладки
+var links=document.querySelectorAll("nav a"),secs=["home","how","quiz"].map(function(id){return document.getElementById(id)});
+addEventListener("scroll",function(){var y=scrollY+innerHeight*.35,cur=0;secs.forEach(function(s,n){if(s&&s.offsetTop<=y)cur=n});links.forEach(function(a,n){a.classList.toggle("on",n===cur)})},{passive:true});
+</script>
+</body>
+</html>
