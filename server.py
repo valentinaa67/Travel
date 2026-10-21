@@ -22,7 +22,7 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://clodex.xyz")
 MODEL_NAME = os.environ.get("MODEL_NAME", "claude-fable-5")
 
-client = Anthropic(api_key=ANTHROPIC_API_KEY, base_url=ANTHROPIC_BASE_URL)
+client = Anthropic(api_key=ANTHROPIC_API_KEY, base_url=ANTHROPIC_BASE_URL, max_retries=0)
 
 
 def build_prompt(data, exclude=None, forced_destination=None):
@@ -97,7 +97,7 @@ def suggest():
             max_tokens=1500,
             system=system,
             messages=[{"role": "user", "content": user_text}],
-            timeout=60,
+            timeout=50,
         )
         ai_text = response.content[0].text
     except Exception as e:
