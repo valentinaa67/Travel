@@ -30,9 +30,11 @@ def build_prompt(data, exclude=None, forced_destination=None):
     parts = []
     parts.append(f"Город вылета: {data.get('city', '')}")
     parts.append(f"Взрослых: {data.get('adults', '')}")
-    children = data.get("children", "Нет")
+    children = str(data.get("children", "0"))
+    if children in ("", "Нет"):
+        children = "0"
     parts.append(f"Детей: {children}")
-    if children and children != "Нет":
+    if children != "0":
         parts.append(f"Возраст детей: {data.get('children_ages', '')}")
     parts.append(f"Гражданство: {data.get('citizenship', '')}")
     parts.append(f"Даты: {data.get('dates', '')}")
